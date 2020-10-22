@@ -2,8 +2,11 @@ const express =require('express');
 const path = require('path');
 const app = express();
 const morgan = require('morgan');
-
-const {users, contacts } = require('./data');
+const session = require('express-session');
+const PassporLocal = require('passport-local').Strategy;
+const usersRoutes = require('./routes/users');
+const users = JSON.parse(localStorage.getItem('users'));
+const passport = require('passport');
 
 //Settings
 app.set('port', process.env.PORT || 3000);
@@ -13,14 +16,46 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 //Middleware
+app.use(session({
+    secret:'secret key',
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new PassporLocal(function(username,password,done){
+    
+    for (const key in users) {
+        const element = users[key];
+        if(element['username'] === username){
+            if(element['password'] === password){
+                return done(null,{id:element['user_id'],'username':element['username']});
+                // res.redirect('/');
+            }
+        }
+    }
+    done(null,false);
+}));
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
+  
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 
 
+
 //Routes
 
-const usersRoutes = require('./routes/users');
-const { urlencoded } = require('express');
+app.get("/", (req,res,next) => {
+    if(req.isAuthenticated()) return next();
+    res.redirect("/login");
+});
 app.use('/',usersRoutes);
 
 

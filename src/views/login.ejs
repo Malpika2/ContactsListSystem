@@ -152,8 +152,13 @@
 						aria-labelledby="login-tab"
 					>
                         <form id="formLogin" action="/login" method="POST">
-                            <% if (message) { %>
+                            <% if (type=='danger') { %>
                                 <div class="text-center text-danger">
+                            <% }else{ %>
+                                <div class="text-center text-success">
+                            <% } %>
+                            <% if (message) { %>
+                                
                                     <p> <%= message %></p>
                                 </div>
                              <% } %>

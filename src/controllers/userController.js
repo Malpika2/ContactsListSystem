@@ -3,14 +3,14 @@ if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
     localStorage = new LocalStorage('./scratch');
   }
-controller.list = (req, res )=>{
-    // If are not logged in
-
-    res.render('login',{message:''});
-
-    // If you are logged in
+controller.list = (req, res ) =>{
+    res.render('homepage',{message:''});
 };
+
+
 controller.signup = (req, res) => {
+    // Save register into localStorage
+
     for(var key in localStorage){
         console.log(key);
     }
@@ -21,23 +21,17 @@ controller.signup = (req, res) => {
     localStorage['users'] = JSON.stringify(value);
     console.log(req.body);
 
-    res.redirect('/');
+    res.render('login',{message:'Register successful',type:'success'});
 }
+
+
 controller.login = (req, res ) => {
-    let {username,password } = req.body;
-    console.log(username, password);
-    // Get values
-    var users = JSON.parse(localStorage.getItem('users'));
-    for (const key in users) {
-        const element = users[key];
-        if(element['username'] === username){
-            if(element['password'] === password){
-                res.redirect('/');
-            }
-        }
-    }
-    res.render('login',{message:'User or password invalid'});
+   
+    res.render('login',{message:'User or password invalid',type:'danger'});
 }
+
+
+
 controller.update = (req, res )=>{
     res.send('save');
 };
