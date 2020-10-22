@@ -1,0 +1,18 @@
+<%- include ('partials/_header')  %>
+<div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-4 card text-center pt-5">
+            <h3>Update Contact</h3>
+            <form action="/edit" id="register-form" method="POST">
+              <input value="<%= contact['name'] %>" class="form-control" type="text" name="name"  required />
+              <input value="<%= contact['lastName'] %>" class="form-control" type="text" name="lastName"  required />
+              <input value="<%= contact['email'] %>" class="form-control" type="email" name="email"  required />
+              <input value="<%= contact['number'] %>" class="form-control" type="text" name="number"  required />
+              <input value="<%= contact['contact_id'] %>" class="form-control" type="hidden" name="contact_id"  />
+              <button class="btn btn-success btn-block">Update</button>
+            </form>
+          </div>
+      </div>
+    </div>
+
+<%- include ('partials/_footer')  %>
