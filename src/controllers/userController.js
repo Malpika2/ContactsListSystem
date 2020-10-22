@@ -1,34 +1,45 @@
 const controller = {};
-
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require('node-localstorage').LocalStorage;
+    localStorage = new LocalStorage('./scratch');
+  }
 controller.list = (req, res )=>{
-    // Store
-    
-    if (typeof localStorage === "undefined" || localStorage === null) {
-        var LocalStorage = require('node-localstorage').LocalStorage;
-        localStorage = new LocalStorage('./scratch');
-      }
-    //   localStorage.clear();
-      const value = {
-          name:'pablo',
-          lastname:'hernsand'
-      }
+    // If are not logged in
 
-    //   localStorage.setItem('user1', JSON.stringify(value));
-      console.log(localStorage.length);
-      for(var  i=0; i < localStorage.length; i++){
-        console.log(localStorage.getItem(localStorage.key(i)));
-      }
-    // localStorage.setItem('myFirstKey', JSON.stringify(value));
-    // console.log(localStorage.getItem('myFirstKey'));
+    res.render('login',{message:''});
 
-    // res.send('list');
-    res.render('usuarios'); 
+    // If you are logged in
 };
-controller.save = (req, res )=>{
+controller.signup = (req, res) => {
+    for(var key in localStorage){
+        console.log(key);
+    }
+    let {username,password } = req.body;
+    let idUser = Date.now();
+    let value = JSON.parse(localStorage.getItem('users'));
+    value[idUser] = {"user_id":idUser,"username":username,"password":password};
+    localStorage['users'] = JSON.stringify(value);
+    console.log(req.body);
+
+    res.redirect('/');
+}
+controller.login = (req, res ) => {
+    let {username,password } = req.body;
+    console.log(username, password);
+    // Get values
+    var users = JSON.parse(localStorage.getItem('users'));
+    for (const key in users) {
+        const element = users[key];
+        if(element['username'] === username){
+            if(element['password'] === password){
+                res.redirect('/');
+            }
+        }
+    }
+    res.render('login',{message:'User or password invalid'});
+}
+controller.update = (req, res )=>{
     res.send('save');
-};
-controller.delete = (req, res )=>{
-    res.send('delete');
 };
 
 module.exports = controller; 

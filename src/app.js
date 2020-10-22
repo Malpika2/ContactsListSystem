@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const morgan = require('morgan');
 
+const {users, contacts } = require('./data');
 
 //Settings
 app.set('port', process.env.PORT || 3000);
@@ -13,11 +14,13 @@ app.set('views', path.join(__dirname, 'views'));
 
 //Middleware
 app.use(morgan('dev'));
+app.use(express.urlencoded({extended: true}));
 
 
 //Routes
 
 const usersRoutes = require('./routes/users');
+const { urlencoded } = require('express');
 app.use('/',usersRoutes);
 
 
